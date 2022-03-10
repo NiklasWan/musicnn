@@ -10,7 +10,7 @@ from musicnn import models
 from musicnn import configuration as config
 
 
-def batch_data(audio_file, n_frames, overlap):
+def batch_data(audio, n_frames, overlap):
     '''For an efficient computation, we split the full music spectrograms in patches of length n_frames with overlap.
 
     INPUT
@@ -38,9 +38,8 @@ def batch_data(audio_file, n_frames, overlap):
     '''
 
     # compute the log-mel spectrogram with librosa
-    audio, sr = librosa.load(audio_file, sr=config.SR)
     audio_rep = librosa.feature.melspectrogram(y=audio, 
-                                               sr=sr,
+                                               sr=config.SR,
                                                hop_length=config.FFT_HOP,
                                                n_fft=config.FFT_SIZE,
                                                n_mels=config.N_MELS).T
@@ -62,7 +61,7 @@ def batch_data(audio_file, n_frames, overlap):
     return batch, audio_rep
 
 
-def extractor(file_name, model='MTT_musicnn', input_length=3, input_overlap=False, extract_features=True):
+def extractor(audio, model='MTT_musicnn', input_length=2, input_overlap=False, extract_features=True):
     '''Extract the taggram (the temporal evolution of tags) and features (intermediate representations of the model) of the music-clip in file_name with the selected model.
 
     INPUT
@@ -155,7 +154,7 @@ def extractor(file_name, model='MTT_musicnn', input_length=3, input_overlap=Fals
 
     # batching data
     print('Computing spectrogram (w/ librosa) and tags (w/ tensorflow)..', end =" ")
-    batch, spectrogram = batch_data(file_name, n_frames, overlap)
+    batch, spectrogram = batch_data(audio, n_frames, overlap)
 
     # tensorflow: extract features and tags
     # ..first batch!

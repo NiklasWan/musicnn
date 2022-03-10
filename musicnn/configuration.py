@@ -1,5 +1,5 @@
 # Signal processing setup
-SR = 16000
+SR = 48000
 FFT_HOP = 256
 FFT_SIZE = 512
 N_MELS = 96
